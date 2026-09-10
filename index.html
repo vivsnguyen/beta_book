@@ -1,0 +1,739 @@
+<title>Beta Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Karla:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --page:#efeee6; --surface:#faf9f3; --surface-2:#f2f1e9;
+    --ink:#1b1d19; --ink-2:#55564c; --muted:#8b8c80; --line:#dedcd0;
+    --border:rgba(11,11,11,0.10);
+    --accent:#5b4ea6; --accent-ink:#ffffff; --accent-soft:rgba(91,78,166,0.12);
+    --boulder:#b8790f; --boulder-soft:rgba(184,121,15,0.14);
+    --route:#0c8fa0; --route-soft:rgba(12,143,160,0.14);
+    --good:#3f7d3f; --danger:#a5432f;
+    --shadow:0 1px 2px rgba(20,20,15,0.07), 0 8px 20px rgba(20,20,15,0.06);
+    --font-display:"Big Shoulders Display", "Arial Narrow", sans-serif;
+    --font-body:"Karla", -apple-system, "Segoe UI", sans-serif;
+    --font-mono:"IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --page:#141510; --surface:#1b1c17; --surface-2:#20221b;
+      --ink:#f3f1e7; --ink-2:#c9c8bc; --muted:#8e8d80; --line:#34362b;
+      --border:rgba(255,255,255,0.10);
+      --accent:#9186dd; --accent-ink:#141018; --accent-soft:rgba(145,134,221,0.20);
+      --boulder:#c98a1e; --boulder-soft:rgba(201,138,30,0.20);
+      --route:#28b4c7; --route-soft:rgba(40,180,199,0.20);
+      --good:#6fbe6f; --danger:#e2695a;
+      --shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --page:#141510; --surface:#1b1c17; --surface-2:#20221b;
+    --ink:#f3f1e7; --ink-2:#c9c8bc; --muted:#8e8d80; --line:#34362b;
+    --border:rgba(255,255,255,0.10);
+    --accent:#9186dd; --accent-ink:#141018; --accent-soft:rgba(145,134,221,0.20);
+    --boulder:#c98a1e; --boulder-soft:rgba(201,138,30,0.20);
+    --route:#28b4c7; --route-soft:rgba(40,180,199,0.20);
+    --good:#6fbe6f; --danger:#e2695a;
+    --shadow:0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--page); color:var(--ink); font-family:var(--font-body);
+    padding:0 20px; padding-block:28px 64px;
+  }
+  .wrap{max-width:980px; margin:0 auto; display:flex; flex-direction:column; gap:28px;}
+
+  /* header */
+  header.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px;}
+  .brand-eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 4px;
+  }
+  h1{
+    font-family:var(--font-display); font-weight:800; font-size:clamp(34px,6vw,52px);
+    line-height:0.92; margin:0; text-wrap:balance; letter-spacing:0.01em;
+  }
+  .tagline{color:var(--ink-2); margin:8px 0 0; max-width:52ch; font-size:15px;}
+  button.primary{
+    font-family:var(--font-body); font-weight:700; font-size:14.5px; color:var(--accent-ink);
+    background:var(--accent); border:none; border-radius:10px; padding:12px 20px;
+    cursor:pointer; box-shadow:var(--shadow); white-space:nowrap;
+  }
+  button.primary:hover{filter:brightness(1.06);}
+  button.primary:focus-visible, button.ghost:focus-visible, .chip:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+
+  /* sample banner */
+  .banner{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; justify-content:space-between;
+    background:var(--accent-soft); border:1px solid var(--border); border-radius:12px; padding:12px 16px;
+    font-size:14px; color:var(--ink);
+  }
+  .banner strong{font-weight:700;}
+  .banner .dot{color:var(--accent); font-weight:700;}
+
+  /* stat grid */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:2px; background:var(--line); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow);}
+  .stat{background:var(--surface); padding:16px 18px; display:flex; flex-direction:column; gap:6px;}
+  .stat .label{font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); font-family:var(--font-mono);}
+  .stat .value{font-family:var(--font-display); font-weight:700; font-size:30px; line-height:1;}
+  .stat .value.boulder{color:var(--boulder);}
+  .stat .value.route{color:var(--route);}
+  .stat .sub{font-size:12px; color:var(--ink-2);}
+
+  /* form */
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px;}
+  .panel h2{font-family:var(--font-display); font-size:22px; font-weight:700; margin:0 0 14px;}
+  form.log-form{display:grid; grid-template-columns:repeat(4,1fr); gap:14px 16px;}
+  form.log-form .field{display:flex; flex-direction:column; gap:6px;}
+  form.log-form .field.span-2{grid-column:span 2;}
+  form.log-form .field.span-4{grid-column:span 4;}
+  @media (max-width:680px){
+    form.log-form{grid-template-columns:repeat(2,1fr);}
+    form.log-form .field.span-2{grid-column:span 2;}
+  }
+  label{font-size:12px; font-weight:600; color:var(--ink-2);}
+  input, select, textarea{
+    font-family:var(--font-body); font-size:14px; color:var(--ink); background:var(--surface-2);
+    border:1px solid var(--border); border-radius:8px; padding:9px 10px; width:100%;
+  }
+  input[type="range"]{padding:0;}
+  textarea{resize:vertical; min-height:44px;}
+  .effort-row{display:flex; align-items:center; gap:10px;}
+  .effort-row output{font-family:var(--font-mono); font-size:13px; color:var(--ink-2); min-width:44px;}
+  .form-actions{grid-column:1/-1; display:flex; gap:10px; justify-content:flex-end; margin-top:2px;}
+  button.ghost{
+    font-family:var(--font-body); font-weight:600; font-size:14px; color:var(--ink-2);
+    background:transparent; border:1px solid var(--border); border-radius:9px; padding:10px 16px; cursor:pointer;
+  }
+  button.ghost:hover{background:var(--surface-2);}
+
+  /* charts */
+  .charts-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:680px){.charts-row{grid-template-columns:1fr;}}
+  .chart-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:18px 18px 14px;}
+  .chart-card h3{font-family:var(--font-display); font-weight:700; font-size:19px; margin:0 0 2px;}
+  .chart-card .chart-sub{font-size:12px; color:var(--muted); margin:0 0 8px;}
+  .chart-card svg{width:100%; height:auto; display:block; overflow:visible;}
+  .axis-label{font-family:var(--font-mono); font-size:10.5px; fill:var(--muted);}
+  .grid-line{stroke:var(--line); stroke-width:1;}
+  .pr-line{fill:none; stroke-width:2;}
+  .pr-line.boulder{stroke:var(--boulder);}
+  .pr-line.route{stroke:var(--route);}
+  .end-label{font-family:var(--font-mono); font-size:13px; font-weight:600;}
+  .end-label.boulder{fill:var(--boulder);}
+  .end-label.route{fill:var(--route);}
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:6px;}
+  .legend-item{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-2);}
+  .swatch{width:10px; height:10px; border-radius:3px; display:inline-block;}
+  .swatch.boulder{background:var(--boulder);}
+  .swatch.route{background:var(--route);}
+  .empty-chart{fill:var(--muted); font-family:var(--font-body); font-size:13px;}
+
+  /* table */
+  .log-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px;}
+  .chips{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:0.02em; padding:7px 12px; border-radius:999px;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--ink-2); cursor:pointer;
+  }
+  .chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600;}
+
+  .log-list{display:flex; flex-direction:column; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow);}
+  .log-row{
+    display:grid; grid-template-columns:96px 118px 1fr 96px 120px 1fr 34px; align-items:center; gap:12px;
+    padding:12px 16px; background:var(--surface); border-bottom:1px solid var(--border); font-size:13.5px;
+  }
+  .log-row.head-row{background:var(--surface-2); font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); padding:9px 16px;}
+  .log-row:last-child{border-bottom:none;}
+  .cell-date{font-family:var(--font-mono); color:var(--ink-2); white-space:nowrap;}
+  .grade-badge{display:flex; align-items:center; gap:7px; font-family:var(--font-mono); font-weight:600;}
+  .grade-badge .dot{width:9px; height:9px; border-radius:50%; flex:none;}
+  .grade-badge .dot.boulder{background:var(--boulder);}
+  .grade-badge .dot.route{background:var(--route);}
+  .cell-style{color:var(--ink-2);}
+  .send-tag{display:inline-flex; align-items:center; gap:6px; font-size:12.5px;}
+  .send-tag .ring{width:10px; height:10px; border-radius:50%; border:2px solid var(--muted); flex:none;}
+  .send-tag.sent .ring{border:none; background:var(--good);}
+  .cell-effort{display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px; color:var(--ink-2);}
+  .meter{width:52px; height:6px; border-radius:4px; background:var(--line); overflow:hidden; flex:none;}
+  .meter > span{display:block; height:100%; background:var(--ink-2);}
+  .cell-where{color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .cell-where .angle{color:var(--muted); font-size:12px;}
+  .row-del{background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; padding:4px; border-radius:6px; line-height:1;}
+  .row-del:hover{color:var(--danger); background:var(--surface-2);}
+  .sample-tag{font-family:var(--font-mono); font-size:10px; color:var(--muted); border:1px dashed var(--border); border-radius:5px; padding:1px 6px;}
+  .empty-log{padding:28px 16px; text-align:center; color:var(--muted); font-size:14px; background:var(--surface);}
+
+  @media (max-width:760px){
+    .log-row{grid-template-columns:1fr; gap:4px; padding:14px 16px;}
+    .log-row.head-row{display:none;}
+    .cell-where{white-space:normal;}
+    .log-row{position:relative;}
+    .row-del{position:absolute; top:12px; right:12px;}
+  }
+
+  footer.note{font-size:12px; color:var(--muted); text-align:center; padding-top:4px;}
+
+  .info-wrap{position:relative; display:inline-flex; vertical-align:middle; margin-left:5px;}
+  .info-btn{
+    width:15px; height:15px; border-radius:50%; border:1px solid var(--muted); background:none;
+    color:var(--muted); font-family:var(--font-mono); font-size:10px; line-height:1; padding:0;
+    display:inline-flex; align-items:center; justify-content:center; cursor:help;
+  }
+  .info-btn:hover, .info-wrap:focus-within .info-btn{border-color:var(--accent); color:var(--accent);}
+  .info-pop{
+    position:absolute; left:50%; top:calc(100% + 8px); transform:translateX(-50%) translateY(-4px);
+    width:min(260px, 78vw); background:var(--ink); color:var(--page); border-radius:9px; box-shadow:var(--shadow);
+    padding:10px 12px; font-size:12px; line-height:1.55; text-align:left; z-index:40;
+    opacity:0; visibility:hidden; transition:opacity 0.12s ease, transform 0.12s ease; pointer-events:none;
+  }
+  .info-wrap:hover .info-pop, .info-wrap:focus-within .info-pop{
+    opacity:1; visibility:visible; transform:translateX(-50%) translateY(0);
+  }
+  .info-pop dt{font-weight:700; font-family:var(--font-mono);}
+  .info-pop dd{margin:0 0 6px; color:var(--page); opacity:0.85;}
+  .info-pop dd:last-child{margin-bottom:0;}
+  @media (prefers-reduced-motion: reduce){ .info-pop{transition:none;} }
+
+  #tooltip{
+    position:fixed; pointer-events:none; z-index:50; background:var(--ink); color:var(--page);
+    font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:8px 10px; border-radius:8px;
+    box-shadow:var(--shadow); max-width:220px; transform:translate(-50%,-100%); margin-top:-10px;
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="brand-eyebrow">Climbing Log</p>
+      <h1>Beta&nbsp;Book</h1>
+      <p class="tagline">Every send, every project, every wall angle — tracked from first V0 to your current project.</p>
+    </div>
+    <button class="primary" id="toggle-form-btn" type="button">+ Log a climb</button>
+  </header>
+
+  <div class="banner" id="sample-banner" hidden>
+    <span><span class="dot">●</span> Showing <strong>example climbs</strong> so you can see how this works.</span>
+    <span>Log your first real send below and this data disappears.</span>
+  </div>
+
+  <section class="stats" id="stats" aria-label="Summary stats"></section>
+
+  <section class="panel" id="form-panel" hidden>
+    <h2>Log a climb</h2>
+    <form class="log-form" id="log-form">
+      <div class="field">
+        <label for="f-date">Date</label>
+        <input type="date" id="f-date" required>
+      </div>
+      <div class="field">
+        <label for="f-style">Style</label>
+        <select id="f-style" required></select>
+      </div>
+      <div class="field">
+        <label for="f-grade">Grade</label>
+        <select id="f-grade" required></select>
+      </div>
+      <div class="field">
+        <label for="f-send">Send type<span class="info-wrap"><button type="button" class="info-btn" aria-label="What do send types mean?" tabindex="0">i</button><span class="info-pop" role="tooltip"><dl style="margin:0;"><dt>Flash</dt><dd>Sent first try, after watching someone else or getting beta.</dd><dt>Onsight</dt><dd>Sent first try, with zero beta or prior knowledge.</dd><dt>Redpoint</dt><dd>Sent after one or more earlier attempts.</dd><dt>Attempt</dt><dd>Didn't send — still working the moves or the project.</dd></dl></span></span></label>
+        <select id="f-send" required></select>
+      </div>
+      <div class="field">
+        <label for="f-angle">Wall angle</label>
+        <select id="f-angle" required></select>
+      </div>
+      <div class="field">
+        <label for="f-attempts">Attempts</label>
+        <input type="number" id="f-attempts" min="1" step="1" value="1" required>
+      </div>
+      <div class="field span-2">
+        <label for="f-effort">Effort (RPE)</label>
+        <div class="effort-row">
+          <input type="range" id="f-effort" min="1" max="10" step="1" value="5">
+          <output id="f-effort-out" for="f-effort">5 / 10</output>
+        </div>
+      </div>
+      <div class="field span-2">
+        <label for="f-location">Location</label>
+        <input type="text" id="f-location" placeholder="e.g. Stone Gardens" required>
+      </div>
+      <div class="field span-4">
+        <label for="f-notes">Notes (optional)</label>
+        <textarea id="f-notes" placeholder="Beta, crux, how it felt..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="ghost" id="cancel-form-btn">Cancel</button>
+        <button type="submit" class="primary">Save climb</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="charts-row" id="charts"></section>
+
+  <section class="panel" style="padding:20px 0 0;">
+    <div class="log-head" style="padding:0 22px 14px;">
+      <h2 style="margin:0;">Climb log</h2>
+      <div class="chips" id="filter-chips"></div>
+    </div>
+    <div class="log-list" id="log-list"></div>
+  </section>
+
+  <footer class="note" id="store-note"></footer>
+</div>
+
+<div id="tooltip" hidden></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var BOULDER_GRADES = ["VB","V0","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15","V16","V17"];
+  var ROUTE_GRADES = (function(){
+    var base = ["5.6","5.7","5.8","5.9"];
+    var suf = ["a","b","c","d"];
+    var out = base.slice();
+    for (var n = 10; n <= 15; n++) {
+      for (var i = 0; i < suf.length; i++) out.push("5." + n + suf[i]);
+    }
+    return out;
+  })();
+  var STYLES = ["Boulder","Sport","Trad","Top Rope"];
+  var SENDS = ["Flash","Onsight","Redpoint","Attempt"];
+  var ANGLES = ["Slab","Vertical","Overhang","Roof"];
+
+  function disciplineOf(style){ return style === "Boulder" ? "boulder" : "route"; }
+  function scaleFor(style){ return style === "Boulder" ? BOULDER_GRADES : ROUTE_GRADES; }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function fmtDate(d){
+    var dt = new Date(d + "T00:00:00");
+    return dt.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  }
+  function monthKey(d){ return d.slice(0,7); }
+  function monthLabel(mk){
+    var dt = new Date(mk + "-01T00:00:00");
+    return dt.toLocaleDateString(undefined, { month:"short" });
+  }
+
+  var SAMPLE_CLIMBS = [
+    {id:"s1",  date:"2026-05-03", style:"Boulder",  grade:"V2",    send:"Flash",    attempts:1,  effort:4, location:"Vertical World", angle:"Vertical", notes:"", sample:true},
+    {id:"s2",  date:"2026-05-10", style:"Boulder",  grade:"V3",    send:"Redpoint", attempts:5,  effort:7, location:"Vertical World", angle:"Overhang", notes:"", sample:true},
+    {id:"s3",  date:"2026-05-17", style:"Sport",    grade:"5.9",   send:"Onsight",  attempts:1,  effort:5, location:"Index Town Wall", angle:"Vertical", notes:"", sample:true},
+    {id:"s4",  date:"2026-05-24", style:"Boulder",  grade:"V3",    send:"Flash",    attempts:1,  effort:5, location:"Vertical World", angle:"Slab", notes:"", sample:true},
+    {id:"s5",  date:"2026-06-02", style:"Sport",    grade:"5.10a", send:"Redpoint", attempts:3,  effort:7, location:"Index Town Wall", angle:"Overhang", notes:"", sample:true},
+    {id:"s6",  date:"2026-06-14", style:"Boulder",  grade:"V4",    send:"Redpoint", attempts:8,  effort:8, location:"Stone Gardens", angle:"Overhang", notes:"", sample:true},
+    {id:"s7",  date:"2026-06-14", style:"Boulder",  grade:"V4",    send:"Attempt",  attempts:6,  effort:9, location:"Stone Gardens", angle:"Roof", notes:"Current project", sample:true},
+    {id:"s8",  date:"2026-07-01", style:"Sport",    grade:"5.10b", send:"Redpoint", attempts:4,  effort:7, location:"Vantage", angle:"Vertical", notes:"", sample:true},
+    {id:"s9",  date:"2026-07-19", style:"Boulder",  grade:"V5",    send:"Redpoint", attempts:10, effort:9, location:"Stone Gardens", angle:"Overhang", notes:"", sample:true},
+    {id:"s10", date:"2026-08-02", style:"Sport",    grade:"5.10c", send:"Onsight",  attempts:1,  effort:6, location:"Index Town Wall", angle:"Slab", notes:"", sample:true},
+    {id:"s11", date:"2026-08-20", style:"Boulder",  grade:"V5",    send:"Flash",    attempts:1,  effort:6, location:"Stone Gardens", angle:"Vertical", notes:"", sample:true},
+    {id:"s12", date:"2026-09-05", style:"Sport",    grade:"5.10d", send:"Redpoint", attempts:6,  effort:8, location:"Vantage", angle:"Overhang", notes:"", sample:true}
+  ];
+
+  var LS_KEY = "beta-book-climbs-v1";
+  var db = null, climbsCol = null, storeMode = "local";
+  var realClimbs = [];
+  var filterStyle = "All";
+
+  function activeClimbs(){ return realClimbs.length ? realClimbs : SAMPLE_CLIMBS; }
+  function isSampleMode(){ return realClimbs.length === 0; }
+
+  function loadLocal(){
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      realClimbs = raw ? JSON.parse(raw) : [];
+    } catch (e) { realClimbs = []; }
+    render();
+  }
+  function saveLocal(){
+    try { localStorage.setItem(LS_KEY, JSON.stringify(realClimbs)); } catch (e) {}
+  }
+
+  function addClimb(data){
+    if (storeMode === "db" && climbsCol) {
+      climbsCol.add(data).catch(function(e){ alert("Could not save climb: " + e.message); });
+    } else {
+      realClimbs.push(Object.assign({ id: "c" + Date.now() + Math.random().toString(36).slice(2,7) }, data));
+      saveLocal();
+      render();
+    }
+  }
+  function deleteClimb(id){
+    if (storeMode === "db" && climbsCol) {
+      climbsCol.doc(id).delete().catch(function(){});
+    } else {
+      realClimbs = realClimbs.filter(function(c){ return c.id !== id; });
+      saveLocal();
+      render();
+    }
+  }
+
+  function initStore(){
+    storeMode = "local";
+    document.getElementById("store-note").textContent = "Saved locally in this browser — clearing site data will erase your log.";
+    loadLocal();
+  }
+
+  /* ---------- stats ---------- */
+  function computeStats(climbs){
+    var total = climbs.length;
+    var sent = climbs.filter(function(c){ return c.send !== "Attempt"; });
+    var sessions = {};
+    climbs.forEach(function(c){ sessions[c.date] = true; });
+    var sessionCount = Object.keys(sessions).length;
+
+    var bestBoulder = -1, bestRoute = -1;
+    sent.forEach(function(c){
+      var scale = scaleFor(c.style);
+      var r = scale.indexOf(c.grade);
+      if (r < 0) return;
+      if (disciplineOf(c.style) === "boulder") { if (r > bestBoulder) bestBoulder = r; }
+      else { if (r > bestRoute) bestRoute = r; }
+    });
+
+    var now = new Date();
+    var curMonth = now.toISOString().slice(0,7);
+    var thisMonthCount = climbs.filter(function(c){ return monthKey(c.date) === curMonth; }).length;
+
+    var sendRate = total ? Math.round((sent.length / total) * 100) : 0;
+
+    return {
+      total: total,
+      sessionCount: sessionCount,
+      hardestBoulder: bestBoulder >= 0 ? BOULDER_GRADES[bestBoulder] : "—",
+      hardestRoute: bestRoute >= 0 ? ROUTE_GRADES[bestRoute] : "—",
+      sendRate: sendRate,
+      thisMonthCount: thisMonthCount
+    };
+  }
+
+  function renderStats(climbs){
+    var s = computeStats(climbs);
+    var tiles = [
+      { label: "Total climbs", value: s.total, cls: "" },
+      { label: "Sessions logged", value: s.sessionCount, cls: "" },
+      { label: "Hardest boulder", value: s.hardestBoulder, cls: "boulder" },
+      { label: "Hardest route", value: s.hardestRoute, cls: "route" },
+      { label: "Send rate", value: s.sendRate + "%", cls: "" },
+      { label: "This month", value: s.thisMonthCount, cls: "", sub: "climbs logged" }
+    ];
+    var html = tiles.map(function(t){
+      return '<div class="stat"><span class="label">' + escapeHtml(t.label) + '</span>' +
+        '<span class="value ' + t.cls + '">' + escapeHtml(String(t.value)) + '</span>' +
+        (t.sub ? '<span class="sub">' + escapeHtml(t.sub) + '</span>' : '') +
+        '</div>';
+    }).join("");
+    document.getElementById("stats").innerHTML = html;
+  }
+
+  /* ---------- charts ---------- */
+  function emptyChartSvg(w, h, message){
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + escapeHtml(message) + '">' +
+      '<text class="empty-chart" x="' + (w/2) + '" y="' + (h/2) + '" text-anchor="middle">' + escapeHtml(message) + '</text>' +
+      '</svg>';
+  }
+
+  function progressionChart(items, scale, cls, emptyMsg){
+    var W = 460, H = 220, padL = 40, padR = 40, padT = 18, padB = 26;
+    if (!items.length) return emptyChartSvg(W, H, emptyMsg);
+    var innerW = W - padL - padR, innerH = H - padT - padB;
+
+    var sorted = items.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+    var times = sorted.map(function(c){ return new Date(c.date + "T00:00:00").getTime(); });
+    var minT = Math.min.apply(null, times), maxT = Math.max.apply(null, times);
+    if (minT === maxT) { minT -= 6048e5; maxT += 6048e5; }
+    else { var padT2 = (maxT - minT) * 0.08; minT -= padT2; maxT += padT2; }
+
+    var ranks = sorted.map(function(c){ return scale.indexOf(c.grade); }).filter(function(r){ return r >= 0; });
+    var minR = Math.max(0, Math.min.apply(null, ranks) - 1);
+    var maxR = Math.min(scale.length - 1, Math.max.apply(null, ranks) + 1);
+    if (minR === maxR) { minR = Math.max(0, minR - 1); maxR = Math.min(scale.length - 1, maxR + 1); }
+
+    function x(t){ return padL + (t - minT) / (maxT - minT) * innerW; }
+    function y(r){ return padT + innerH - (r - minR) / (maxR - minR) * innerH; }
+
+    var best = -1, prPoints = [];
+    sorted.forEach(function(c){
+      if (c.send === "Attempt") return;
+      var r = scale.indexOf(c.grade);
+      if (r < 0) return;
+      if (r > best) { best = r; prPoints.push({ t: new Date(c.date + "T00:00:00").getTime(), r: r }); }
+    });
+
+    var lineD = "";
+    if (prPoints.length) {
+      lineD = "M " + x(prPoints[0].t).toFixed(1) + " " + y(prPoints[0].r).toFixed(1);
+      for (var k = 1; k < prPoints.length; k++) {
+        lineD += " L " + x(prPoints[k].t).toFixed(1) + " " + y(prPoints[k].r).toFixed(1);
+      }
+      lineD += " L " + x(maxT).toFixed(1) + " " + y(prPoints[prPoints.length-1].r).toFixed(1);
+    }
+
+    var tickRs = [];
+    [minR, best >= 0 ? best : maxR, maxR].forEach(function(r){ if (tickRs.indexOf(r) === -1) tickRs.push(r); });
+    tickRs.sort(function(a,b){ return a-b; });
+
+    var gridSvg = tickRs.map(function(r){
+      var yy = y(r).toFixed(1);
+      return '<line class="grid-line" x1="' + padL + '" x2="' + (W - padR) + '" y1="' + yy + '" y2="' + yy + '"></line>' +
+        '<text class="axis-label" x="' + (padL - 6) + '" y="' + yy + '" text-anchor="end" dominant-baseline="middle">' + escapeHtml(scale[r]) + '</text>';
+    }).join("");
+
+    var dotsSvg = sorted.map(function(c){
+      var r = scale.indexOf(c.grade);
+      if (r < 0) return "";
+      var cx = x(new Date(c.date + "T00:00:00").getTime()).toFixed(1);
+      var cy = y(r).toFixed(1);
+      var sent = c.send !== "Attempt";
+      var tip = escapeHtml(c.grade + " · " + c.send + " · " + fmtDate(c.date) + (c.location ? " · " + c.location : ""));
+      if (sent) {
+        return '<circle class="' + cls + '" data-tip="' + tip + '" cx="' + cx + '" cy="' + cy + '" r="5" fill="currentColor" stroke="var(--surface)" stroke-width="2"></circle>';
+      }
+      return '<circle class="' + cls + '" data-tip="' + tip + '" cx="' + cx + '" cy="' + cy + '" r="4.5" fill="var(--surface)" stroke="currentColor" stroke-width="2"></circle>';
+    }).join("");
+
+    var endLabel = best >= 0
+      ? '<text class="end-label ' + cls + '" x="' + (W - padR + 8) + '" y="' + y(best).toFixed(1) + '" dominant-baseline="middle">' + escapeHtml(scale[best]) + '</text>'
+      : "";
+
+    var xLabels =
+      '<text class="axis-label" x="' + padL + '" y="' + (H - 6) + '" text-anchor="start">' + escapeHtml(fmtDate(sorted[0].date)) + '</text>' +
+      '<text class="axis-label" x="' + (W - padR) + '" y="' + (H - 6) + '" text-anchor="end">' + escapeHtml(fmtDate(sorted[sorted.length-1].date)) + '</text>';
+
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="color:var(--' + cls + ')" role="img">' +
+      gridSvg + '<path class="pr-line ' + cls + '" d="' + lineD + '"></path>' + dotsSvg + endLabel + xLabels +
+      '</svg>';
+  }
+
+  function volumeChart(climbs){
+    var months = [];
+    climbs.forEach(function(c){ var mk = monthKey(c.date); if (months.indexOf(mk) === -1) months.push(mk); });
+    months.sort();
+    if (months.length > 6) months = months.slice(months.length - 6);
+    if (!months.length) return emptyChartSvg(460, 220, "Log a climb to see monthly volume");
+
+    var counts = months.map(function(mk){
+      var b = 0, r = 0;
+      climbs.forEach(function(c){
+        if (monthKey(c.date) !== mk) return;
+        if (disciplineOf(c.style) === "boulder") b++; else r++;
+      });
+      return { mk: mk, boulder: b, route: r };
+    });
+
+    var W = Math.max(460, months.length * 78), H = 220, padL = 30, padR = 14, padT = 16, padB = 30;
+    var innerW = W - padL - padR, innerH = H - padT - padB;
+    var maxCount = Math.max.apply(null, counts.map(function(c){ return c.boulder + c.route > 0 ? Math.max(c.boulder, c.route) : 0; }));
+    maxCount = Math.max(2, maxCount + 1);
+
+    var groupW = innerW / counts.length;
+    var barW = Math.min(24, groupW * 0.32);
+    var gap = 3;
+
+    function yTop(v){ return padT + innerH - (v / maxCount) * innerH; }
+
+    var grid = [0, Math.round(maxCount/2), maxCount].map(function(v){
+      var yy = yTop(v).toFixed(1);
+      return '<line class="grid-line" x1="' + padL + '" x2="' + (W-padR) + '" y1="' + yy + '" y2="' + yy + '"></line>' +
+        '<text class="axis-label" x="' + (padL-6) + '" y="' + yy + '" text-anchor="end" dominant-baseline="middle">' + v + '</text>';
+    }).join("");
+
+    var bars = counts.map(function(c, i){
+      var groupCx = padL + groupW * i + groupW/2;
+      var bx1 = groupCx - barW - gap/2;
+      var bx2 = groupCx + gap/2;
+      var out = "";
+      [["boulder", c.boulder, bx1], ["route", c.route, bx2]].forEach(function(pair){
+        var cls = pair[0], val = pair[1], bx = pair[2];
+        var top = yTop(val);
+        var hgt = (padT + innerH) - top;
+        if (val > 0) {
+          out += '<rect class="bar-' + cls + '" data-tip="' + escapeHtml(monthLabel(c.mk) + " · " + (cls === "boulder" ? "Boulder" : "Route") + ": " + val) + '" x="' + bx.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + barW.toFixed(1) + '" height="' + Math.max(0,hgt).toFixed(1) + '" rx="4" fill="var(--' + cls + ')"></rect>';
+          out += '<text class="axis-label" x="' + (bx + barW/2).toFixed(1) + '" y="' + (top - 5).toFixed(1) + '" text-anchor="middle">' + val + '</text>';
+        }
+      });
+      out += '<text class="axis-label" x="' + groupCx.toFixed(1) + '" y="' + (H-8) + '" text-anchor="middle">' + escapeHtml(monthLabel(c.mk)) + '</text>';
+      return out;
+    }).join("");
+
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img">' + grid + bars + '</svg>';
+  }
+
+  function renderCharts(climbs){
+    var boulderItems = climbs.filter(function(c){ return disciplineOf(c.style) === "boulder"; });
+    var routeItems = climbs.filter(function(c){ return disciplineOf(c.style) !== "boulder"; });
+
+    var html =
+      '<div class="chart-card">' +
+        '<h3>Boulder progression</h3><p class="chart-sub">Highest grade sent over time</p>' +
+        progressionChart(boulderItems, BOULDER_GRADES, "boulder", "Log a boulder to see progress") +
+      '</div>' +
+      '<div class="chart-card">' +
+        '<h3>Route progression</h3><p class="chart-sub">Sport &amp; trad, highest grade sent</p>' +
+        progressionChart(routeItems, ROUTE_GRADES, "route", "Log a route to see progress") +
+      '</div>' +
+      '<div class="chart-card" style="grid-column:1/-1; overflow-x:auto;">' +
+        '<h3>Monthly volume</h3><p class="chart-sub">Climbs logged per month, by discipline</p>' +
+        volumeChart(climbs) +
+        '<div class="legend"><span class="legend-item"><span class="swatch boulder"></span>Boulder</span><span class="legend-item"><span class="swatch route"></span>Route</span></div>' +
+      '</div>';
+    document.getElementById("charts").innerHTML = html;
+  }
+
+  /* ---------- log list ---------- */
+  function renderChips(){
+    var opts = ["All"].concat(STYLES);
+    document.getElementById("filter-chips").innerHTML = opts.map(function(o){
+      return '<button type="button" class="chip" data-style="' + escapeHtml(o) + '" aria-pressed="' + (filterStyle === o) + '">' + escapeHtml(o) + '</button>';
+    }).join("");
+  }
+
+  function renderLog(climbs){
+    var sample = isSampleMode();
+    var filtered = climbs.filter(function(c){ return filterStyle === "All" || c.style === filterStyle; });
+    filtered = filtered.slice().sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+
+    var sendInfo = '<span class="info-wrap"><button type="button" class="info-btn" aria-label="What do send types mean?" tabindex="0">i</button><span class="info-pop" role="tooltip"><dl style="margin:0;"><dt>Flash</dt><dd>Sent first try, after watching someone else or getting beta.</dd><dt>Onsight</dt><dd>Sent first try, with zero beta or prior knowledge.</dd><dt>Redpoint</dt><dd>Sent after one or more earlier attempts.</dd><dt>Attempt</dt><dd>Didn\'t send — still working the moves or the project.</dd></dl></span></span>';
+    var head = '<div class="log-row head-row"><span>Date</span><span>Grade</span><span>Style / send' + sendInfo + '</span><span>Attempts</span><span>Effort</span><span>Location</span><span></span></div>';
+
+    if (!filtered.length) {
+      document.getElementById("log-list").innerHTML = head + '<div class="empty-log">No climbs match this filter yet.</div>';
+      return;
+    }
+
+    var rows = filtered.map(function(c){
+      var disc = disciplineOf(c.style);
+      var sent = c.send !== "Attempt";
+      var effortPct = Math.round((c.effort || 0) / 10 * 100);
+      return '<div class="log-row">' +
+        '<span class="cell-date">' + escapeHtml(fmtDate(c.date)) + (c.sample ? ' <span class="sample-tag">example</span>' : '') + '</span>' +
+        '<span class="grade-badge"><span class="dot ' + disc + '"></span>' + escapeHtml(c.grade) + '</span>' +
+        '<span class="cell-style">' + escapeHtml(c.style) + '<br><span class="send-tag' + (sent ? ' sent' : '') + '"><span class="ring"></span>' + escapeHtml(c.send) + '</span></span>' +
+        '<span>' + (c.attempts || 1) + '&times;</span>' +
+        '<span class="cell-effort">' + (c.effort || 0) + '/10<span class="meter"><span style="width:' + effortPct + '%"></span></span></span>' +
+        '<span class="cell-where">' + escapeHtml(c.location || "") + '<br><span class="angle">' + escapeHtml(c.angle || "") + '</span></span>' +
+        '<span>' + (c.sample ? '' : '<button type="button" class="row-del" data-del="' + escapeHtml(c.id) + '" title="Delete">×</button>') + '</span>' +
+      '</div>';
+    }).join("");
+
+    document.getElementById("log-list").innerHTML = head + rows;
+  }
+
+  /* ---------- form ---------- */
+  function populateSelect(sel, options){
+    sel.innerHTML = options.map(function(o){ return '<option value="' + escapeHtml(o) + '">' + escapeHtml(o) + '</option>'; }).join("");
+  }
+
+  function setupForm(){
+    var styleSel = document.getElementById("f-style");
+    var gradeSel = document.getElementById("f-grade");
+    var sendSel = document.getElementById("f-send");
+    var angleSel = document.getElementById("f-angle");
+    var dateInput = document.getElementById("f-date");
+    var effortInput = document.getElementById("f-effort");
+    var effortOut = document.getElementById("f-effort-out");
+
+    populateSelect(styleSel, STYLES);
+    populateSelect(sendSel, SENDS);
+    populateSelect(angleSel, ANGLES);
+    function refreshGrades(){ populateSelect(gradeSel, scaleFor(styleSel.value)); }
+    refreshGrades();
+    styleSel.addEventListener("change", refreshGrades);
+
+    dateInput.value = new Date().toISOString().slice(0,10);
+    effortInput.addEventListener("input", function(){ effortOut.textContent = effortInput.value + " / 10"; });
+
+    var panel = document.getElementById("form-panel");
+    var toggleBtn = document.getElementById("toggle-form-btn");
+    toggleBtn.addEventListener("click", function(){
+      panel.hidden = !panel.hidden;
+      if (!panel.hidden) dateInput.focus();
+    });
+    document.getElementById("cancel-form-btn").addEventListener("click", function(){ panel.hidden = true; });
+
+    document.getElementById("log-form").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var data = {
+        date: dateInput.value,
+        style: styleSel.value,
+        grade: gradeSel.value,
+        send: sendSel.value,
+        attempts: Math.max(1, parseInt(document.getElementById("f-attempts").value, 10) || 1),
+        effort: parseInt(effortInput.value, 10),
+        location: document.getElementById("f-location").value.trim(),
+        angle: angleSel.value,
+        notes: document.getElementById("f-notes").value.trim(),
+        createdAt: Date.now()
+      };
+      if (!data.date || !data.location) return;
+      addClimb(data);
+      ev.target.reset();
+      dateInput.value = new Date().toISOString().slice(0,10);
+      refreshGrades();
+      effortInput.value = 5; effortOut.textContent = "5 / 10";
+      panel.hidden = true;
+    });
+  }
+
+  /* ---------- interactions: filters, delete, tooltip ---------- */
+  function setupChips(){
+    document.getElementById("filter-chips").addEventListener("click", function(ev){
+      var btn = ev.target.closest(".chip");
+      if (!btn) return;
+      filterStyle = btn.getAttribute("data-style");
+      render();
+    });
+  }
+
+  function setupDelete(){
+    document.getElementById("log-list").addEventListener("click", function(ev){
+      var btn = ev.target.closest("[data-del]");
+      if (!btn) return;
+      deleteClimb(btn.getAttribute("data-del"));
+    });
+  }
+
+  function setupTooltip(){
+    var tip = document.getElementById("tooltip");
+    document.getElementById("charts").addEventListener("pointerover", function(ev){
+      var el = ev.target.closest("[data-tip]");
+      if (!el) return;
+      tip.textContent = el.getAttribute("data-tip");
+      tip.hidden = false;
+    });
+    document.getElementById("charts").addEventListener("pointermove", function(ev){
+      if (tip.hidden) return;
+      tip.style.left = ev.clientX + "px";
+      tip.style.top = ev.clientY + "px";
+    });
+    document.getElementById("charts").addEventListener("pointerout", function(ev){
+      if (ev.target.closest("[data-tip]")) tip.hidden = true;
+    });
+  }
+
+  function render(){
+    var climbs = activeClimbs();
+    document.getElementById("sample-banner").hidden = !isSampleMode();
+    renderStats(climbs);
+    renderCharts(climbs);
+    renderChips();
+    renderLog(climbs);
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setupForm();
+    setupChips();
+    setupDelete();
+    setupTooltip();
+    render();
+    initStore();
+  });
+})();
+</script>
