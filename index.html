@@ -204,9 +204,11 @@
     font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:8px 10px; border-radius:8px;
     box-shadow:var(--shadow); max-width:220px; transform:translate(-50%,-100%); margin-top:-10px;
   }
+  #legacy-app{display:none;}
 </style>
 
-<div class="wrap">
+<div id="react-root"></div>
+<div class="wrap" id="legacy-app">
   <header class="top">
     <div>
       <p class="brand-eyebrow">Climbing Log</p>
@@ -287,7 +289,7 @@
 
 <div id="tooltip" hidden></div>
 
-<script>
+<script type="text/plain">
 (function(){
   "use strict";
 
@@ -737,3 +739,6 @@
   });
 })();
 </script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="app.js"></script>

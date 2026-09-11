@@ -4,9 +4,9 @@ A climbing progress tracker — grade progression charts, session stats, and a f
 
 ## What it is
 
-A single self-contained HTML file (`index.html`). No build step, no dependencies to install.
+A lightweight React app served from `index.html`, with no build step or package install required. React and ReactDOM are loaded from the browser CDN, while the application components live in `app.js`.
 
-- Vanilla HTML/CSS/JS
+- React UI with browser state and localStorage persistence
 - Inline SVG charts (hand-drawn, no charting library)
 - Data is saved to the browser's `localStorage` — private to whichever browser/device you use it in
 
