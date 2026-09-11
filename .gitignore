@@ -1,1 +1,3 @@
 beta-book.sqlite
+node_modules/
+dist/
