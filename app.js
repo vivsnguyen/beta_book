@@ -36,7 +36,6 @@
   var STYLES = ["Boulder", "Sport", "Trad", "Top Rope"];
   var SENDS = ["Flash", "Onsight", "Redpoint", "Attempt"];
   var ANGLES = ["Slab", "Vertical", "Overhang", "Roof"];
-  var LS_KEY = "beta-book-climbs-v1";
   var SAMPLE_CLIMBS = [
     [
       "2026-05-03",
@@ -206,17 +205,33 @@
       month: "short",
     });
   }
-  function loadClimbs() {
-    try {
-      return JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-    } catch (_) {
-      return [];
-    }
+  function requestApi(path, options) {
+    return fetch(path, options).then(function (response) {
+      if (!response.ok) {
+        return response.json().catch(function () { return {}; }).then(function (body) {
+          throw new Error(body.error || "The database request failed");
+        });
+      }
+      return response.status === 204 ? null : response.json();
+    });
   }
-  function saveClimbs(climbs) {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(climbs));
-    } catch (_) {}
+
+  function fetchClimbs() {
+    return requestApi("/api/climbs");
+  }
+
+  function createClimb(climb) {
+    return requestApi("/api/climbs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(climb),
+    });
+  }
+
+  function deleteClimb(id) {
+    return requestApi("/api/climbs/" + encodeURIComponent(id), {
+      method: "DELETE",
+    });
   }
 
   var SEND_TYPE_HELP = [
@@ -638,75 +653,43 @@
             },
           }),
         ),
-        field(
-          "Style",
-          "style",
-          h(
-            "select",
-            {
-              id: "f-style",
-              value: form.style,
-              onChange: function (e) {
-                update("style", e.target.value);
-              },
-            },
-            STYLES.map(function (value) {
-              return h("option", { key: value }, value);
-            }),
-          ),
-        ),
-        field(
-          "Grade",
-          "grade",
-          h(
-            "select",
-            {
-              id: "f-grade",
-              value: form.grade,
-              onChange: function (e) {
-                update("grade", e.target.value);
-              },
-            },
-            scaleFor(form.style).map(function (value) {
-              return h("option", { key: value }, value);
-            }),
-          ),
-        ),
-        h(
-          "div",
-          { className: "field" },
-          h("label", { htmlFor: "f-send" }, "Send type", sendHelp()),
-          h(
-            "select",
-            {
-              id: "f-send",
-              value: form.send,
-              onChange: function (e) {
-                update("send", e.target.value);
-              },
-            },
-            SENDS.map(function (value) {
-              return h("option", { key: value }, value);
-            }),
-          ),
-        ),
-        field(
-          "Wall angle",
-          "angle",
-          h(
-            "select",
-            {
-              id: "f-angle",
-              value: form.angle,
-              onChange: function (e) {
-                update("angle", e.target.value);
-              },
-            },
-            ANGLES.map(function (value) {
-              return h("option", { key: value }, value);
-            }),
-          ),
-        ),
+        h(SelectField, {
+          label: "Style",
+          name: "style",
+          value: form.style,
+          options: STYLES,
+          onChange: function (e) {
+            update("style", e.target.value);
+          },
+        }),
+        h(SelectField, {
+          label: "Grade",
+          name: "grade",
+          value: form.grade,
+          options: scaleFor(form.style),
+          onChange: function (e) {
+            update("grade", e.target.value);
+          },
+        }),
+        h(SelectField, {
+          label: "Send type",
+          name: "send",
+          value: form.send,
+          options: SENDS,
+          help: sendHelp(),
+          onChange: function (e) {
+            update("send", e.target.value);
+          },
+        }),
+        h(SelectField, {
+          label: "Wall angle",
+          name: "angle",
+          value: form.angle,
+          options: ANGLES,
+          onChange: function (e) {
+            update("angle", e.target.value);
+          },
+        }),
         field(
           "Attempts",
           "attempts",
@@ -782,28 +765,53 @@
   }
 
   function App() {
-    var [realClimbs, setRealClimbs] = React.useState(loadClimbs);
+    var [storedClimbs, setStoredClimbs] = React.useState([]);
+    var [isLoading, setIsLoading] = React.useState(true);
+    var [errorMessage, setErrorMessage] = React.useState("");
     var [showForm, setShowForm] = React.useState(false);
-    var [filter, setFilter] = React.useState("All");
-    var climbs = realClimbs.length ? realClimbs : SAMPLE_CLIMBS;
+    var [activeFilter, setActiveFilter] = React.useState("All");
+    var displayedClimbs = isLoading || storedClimbs.length === 0 ? SAMPLE_CLIMBS : storedClimbs;
+
+    React.useEffect(function () {
+      fetchClimbs()
+        .then(function (climbs) {
+          setStoredClimbs(climbs);
+          setErrorMessage("");
+        })
+        .catch(function (error) {
+          setErrorMessage(error.message);
+        })
+        .finally(function () {
+          setIsLoading(false);
+        });
+    }, []);
+
     function addClimb(data) {
-      var next = realClimbs.concat([
-        Object.assign({ id: "c" + Date.now(), createdAt: Date.now() }, data),
-      ]);
-      setRealClimbs(next);
-      saveClimbs(next);
-      setShowForm(false);
+      createClimb(data)
+        .then(function (climb) {
+          setStoredClimbs(function (current) { return current.concat([climb]); });
+          setErrorMessage("");
+          setShowForm(false);
+        })
+        .catch(function (error) {
+          setErrorMessage(error.message);
+        });
     }
     function removeClimb(id) {
-      var next = realClimbs.filter(function (c) {
-        return c.id !== id;
-      });
-      setRealClimbs(next);
-      saveClimbs(next);
+      deleteClimb(id)
+        .then(function () {
+          setStoredClimbs(function (current) {
+            return current.filter(function (climb) { return climb.id !== id; });
+          });
+          setErrorMessage("");
+        })
+        .catch(function (error) {
+          setErrorMessage(error.message);
+        });
     }
-    var filtered = climbs
+    var filtered = displayedClimbs
       .filter(function (c) {
-        return filter === "All" || c.style === filter;
+        return activeFilter === "All" || c.style === activeFilter;
       })
       .slice()
       .sort(function (a, b) {
@@ -838,7 +846,7 @@
           showForm ? "Close form" : "+ Log a climb",
         ),
       ),
-      realClimbs.length === 0 &&
+      storedClimbs.length === 0 &&
         h(
           "div",
           { className: "banner" },
@@ -855,8 +863,9 @@
             null,
             "Log your first real send below and this data disappears.",
           ),
+        errorMessage && h("div", { className: "banner", role: "alert" }, errorMessage),
         ),
-      h(Stats, { climbs: climbs }),
+      h(Stats, { climbs: displayedClimbs }),
       showForm &&
         h(Form, {
           onSave: addClimb,
@@ -868,13 +877,13 @@
         "section",
         { className: "charts-row" },
         h(ProgressChart, {
-          climbs: climbs,
+          climbs: displayedClimbs,
           kind: "boulder",
           title: "Boulder progression",
           subtitle: "Highest grade sent over time",
         }),
         h(ProgressChart, {
-          climbs: climbs,
+          climbs: displayedClimbs,
           kind: "route",
           title: "Route progression",
           subtitle: "Sport & trad, highest grade sent",
@@ -891,7 +900,7 @@
             { className: "chart-sub" },
             "Climbs logged per month, by discipline",
           ),
-          h(VolumeChart, { climbs: climbs }),
+          h(VolumeChart, { climbs: displayedClimbs }),
           h(
             "div",
             { className: "legend" },
@@ -927,9 +936,9 @@
                   key: style,
                   type: "button",
                   className: "chip",
-                  "aria-pressed": filter === style,
+                  "aria-pressed": activeFilter === style,
                   onClick: function () {
-                    setFilter(style);
+                    setActiveFilter(style);
                   },
                 },
                 style,
@@ -1032,7 +1041,7 @@
       h(
         "footer",
         { className: "note" },
-        "Saved locally in this browser - clearing site data will erase your log.",
+        "Saved to the local SQLite database.",
       ),
     );
   }

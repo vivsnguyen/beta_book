@@ -207,7 +207,7 @@
   #legacy-app{display:none;}
 </style>
 
-<div id="react-root"></div>
+<div id="root"></div>
 <div class="wrap" id="legacy-app">
   <header class="top">
     <div>
@@ -739,6 +739,4 @@
   });
 })();
 </script>
-<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="app.js"></script>
+<script type="module" src="/src/main.jsx"></script>
