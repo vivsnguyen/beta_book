@@ -8,7 +8,7 @@ const INITIAL_FORM = {
   date: today(),
   style: "Boulder",
   grade: BOULDER_GRADES[0],
-  send: "Flash",
+  send: "Onsight",
   angle: "Slab",
   attempts: 1,
   effort: 5,

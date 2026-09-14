@@ -8,7 +8,7 @@ export const ROUTE_GRADES = ["5.6", "5.7", "5.8", "5.9"].flatMap((grade) => [gra
 );
 
 export const STYLES = ["Boulder", "Sport", "Trad", "Top Rope"];
-export const SENDS = ["Flash", "Onsight", "Redpoint", "Attempt"];
+export const SENDS = ["Onsight", "Flash", "Redpoint", "Attempt"];
 export const ANGLES = ["Slab", "Vertical", "Overhang", "Roof"];
 
 export const SAMPLE_CLIMBS = [
